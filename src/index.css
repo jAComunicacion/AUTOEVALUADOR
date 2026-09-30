@@ -1,0 +1,416 @@
+/* Diagnóstico jA — mismo sistema visual que jacomunicacion.com.ar (MATERIA-PRIMA.md §15):
+   fondo oscuro que migra al verde #2E7D82, escala tonal del mismo verde (sin grises
+   neutros), dorado #D9A441 solo como acento puntual, General Sans (títulos, 400–500)
+   + Barlow (cuerpo/UI). Sin cursiva ni mayúscula sostenida en texto de lectura. */
+
+:root{
+  --bg:#05110f;
+  --green:#2e7d82;
+  --green-70: color-mix(in srgb, var(--green) 70%, var(--bg));
+  --green-45: color-mix(in srgb, var(--green) 45%, var(--bg));
+  --green-30: color-mix(in srgb, var(--green) 30%, var(--bg));
+  --green-18: color-mix(in srgb, var(--green) 18%, var(--bg));
+  --green-10: color-mix(in srgb, var(--green) 10%, var(--bg));
+  --ink:#eef2f1;
+  --ink-dim: color-mix(in srgb, var(--ink) 60%, var(--bg));
+  --gold:#d9a441;
+  --gold-dim: color-mix(in srgb, var(--gold) 55%, var(--bg));
+
+  --font-display:"General Sans", -apple-system, "Segoe UI", sans-serif;
+  --font-body:"Barlow", -apple-system, "Segoe UI", sans-serif;
+  --gutter:7vw;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+html, body{ background:var(--bg); color:var(--ink); }
+
+body{
+  font-family:var(--font-body);
+  min-height:100vh; min-height:100dvh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Glow que sigue al cursor — "animaciones para agilizar lo estático" */
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  background:radial-gradient(600px circle at var(--mx, 50%) var(--my, 30%),
+    color-mix(in srgb, var(--green) 14%, transparent), transparent 60%);
+  z-index:0;
+}
+
+#root{ position:relative; z-index:1; }
+
+button, input{ font:inherit; color:inherit; }
+
+/* ---------- Marco general ---------- */
+
+.shell{
+  min-height:100vh; min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1.5rem;
+  padding:1.4rem var(--gutter);
+}
+
+.topbar img{ height:44px; width:auto; display:block; }
+
+.topbar .count{
+  font-family:var(--font-display);
+  font-size:.85rem;
+  color:var(--gold-dim);
+  letter-spacing:.04em;
+  font-variant-numeric:tabular-nums;
+}
+
+/* Progreso: una línea fina de verde que avanza, sin barras gruesas */
+.progress{
+  height:2px;
+  background:var(--green-10);
+}
+.progress span{
+  display:block;
+  height:100%;
+  background:var(--green);
+  transition:width .6s cubic-bezier(.2,.7,.3,1);
+}
+
+.stage{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:clamp(2rem, 6vw, 4rem) var(--gutter) clamp(3rem, 8vw, 5rem);
+  max-width:calc(760px + 2 * var(--gutter));
+  width:100%;
+}
+
+.foot{
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:.6rem;
+  padding:1.4rem var(--gutter) 1.8rem;
+  font-size:.78rem;
+  color:var(--ink-dim);
+  border-top:1px solid var(--green-18);
+}
+
+/* ---------- Tipografía ---------- */
+
+.eyebrow{
+  font-family:var(--font-display);
+  font-size:.8rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--green-70);
+  margin-bottom:1.2rem;
+}
+
+.title{
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:clamp(1.9rem, 4.6vw, 3.4rem);
+  line-height:1.06;
+  letter-spacing:-.01em;
+  max-width:20ch;
+  margin-bottom:1.4rem;
+  text-wrap:balance;
+}
+
+.question{
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:clamp(1.45rem, 3.2vw, 2.25rem);
+  line-height:1.18;
+  letter-spacing:-.005em;
+  max-width:26ch;
+  margin-bottom:2.2rem;
+  text-wrap:balance;
+}
+
+.lede{
+  font-size:clamp(1rem, 1.5vw, 1.15rem);
+  line-height:1.7;
+  color:var(--ink-dim);
+  max-width:56ch;
+  margin-bottom:2.2rem;
+}
+
+/* ---------- Opciones: filas con línea fina, continuidad del menú de la web ---------- */
+
+.options{
+  list-style:none;
+  border-top:1px solid var(--green-18);
+}
+
+.option{
+  display:flex;
+  align-items:baseline;
+  gap:1.2rem;
+  width:100%;
+  text-align:left;
+  background:none;
+  border:0;
+  border-bottom:1px solid var(--green-18);
+  padding:1.15rem .4rem;
+  font-size:clamp(1rem, 1.6vw, 1.15rem);
+  line-height:1.45;
+  cursor:pointer;
+  transition:background .25s ease, padding .25s ease;
+}
+
+.option .mark{
+  flex-shrink:0;
+  font-family:var(--font-display);
+  font-size:.8rem;
+  color:var(--green-70);
+  font-variant-numeric:tabular-nums;
+}
+
+.option:hover,
+.option:focus-visible{
+  background:var(--green-18);
+  padding-left:1rem;
+  outline:none;
+}
+
+.option.is-picked{
+  background:var(--green);
+  padding-left:1rem;
+}
+.option.is-picked .mark{ color:var(--ink); }
+
+/* ---------- Botones ---------- */
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.6rem;
+  background:var(--green);
+  color:var(--ink);
+  border:1px solid var(--green);
+  border-radius:4px;
+  padding:.95rem 1.8rem;
+  font-family:var(--font-display);
+  font-size:1rem;
+  font-weight:500;
+  text-decoration:none;
+  cursor:pointer;
+  transition:background .2s ease, border-color .2s ease;
+}
+.btn:hover{ background:var(--green-70); border-color:var(--green-70); }
+.btn:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+.btn[disabled]{ opacity:.5; cursor:default; }
+
+.btn-ghost{
+  background:transparent;
+  border-color:var(--green-45);
+}
+.btn-ghost:hover{ background:var(--green-18); border-color:var(--green); }
+
+.link{
+  background:none;
+  border:0;
+  color:var(--ink-dim);
+  font-size:.9rem;
+  cursor:pointer;
+  text-decoration:underline;
+  text-decoration-color:var(--green-45);
+  text-underline-offset:4px;
+}
+.link:hover{ color:var(--ink); }
+
+.row{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:1rem 1.6rem;
+}
+
+.meta{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:1rem;
+  margin-bottom:1.6rem;
+}
+
+/* ---------- Campos ---------- */
+
+.field{ display:block; margin-bottom:1.2rem; }
+
+.field span{
+  display:block;
+  font-size:.85rem;
+  color:var(--ink-dim);
+  margin-bottom:.5rem;
+}
+
+.input{
+  width:100%;
+  background:var(--green-10);
+  border:1px solid var(--green-30);
+  border-radius:4px;
+  padding:.9rem 1rem;
+  font-size:1.05rem;
+  transition:border-color .2s ease;
+}
+.input:focus{ outline:none; border-color:var(--green); }
+
+.input-code{
+  font-family:var(--font-display);
+  font-size:1.6rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  max-width:14ch;
+}
+
+.error{
+  color:var(--gold);
+  font-size:.92rem;
+  margin:-.4rem 0 1.2rem;
+}
+
+/* ---------- Modal (entrada y cierre) ---------- */
+
+.modal-backdrop{
+  position:fixed; inset:0;
+  z-index:10;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:1rem;
+  background:color-mix(in srgb, var(--bg) 70%, transparent);
+  backdrop-filter:blur(6px);
+}
+
+.modal{
+  position:relative;
+  overflow:hidden;
+  width:100%;
+  max-width:560px;
+  background:var(--green-10);
+  border:1px solid var(--green-30);
+  border-radius:6px;
+  padding:clamp(1.8rem, 5vw, 3rem);
+  animation:rise .7s cubic-bezier(.2,.7,.3,1) both;
+}
+
+.modal > *{ position:relative; }
+
+/* Marca de agua: el isologo en outline (archivo del logo, nunca tipografía) */
+.modal .watermark{
+  position:absolute;
+  right:-12%;
+  bottom:-18%;
+  width:78%;
+  opacity:.07;
+  pointer-events:none;
+}
+
+.modal .title{ font-size:clamp(1.7rem, 4vw, 2.4rem); }
+
+.modal .divider{
+  height:1px;
+  background:var(--green-18);
+  margin:1.8rem 0 1.4rem;
+}
+
+/* ---------- Movimiento: entrada escalonada ---------- */
+
+.stagger > *{
+  animation:rise .7s cubic-bezier(.2,.7,.3,1) both;
+  animation-delay:calc(var(--i, 0) * 70ms);
+}
+
+@keyframes rise{
+  from{ opacity:0; transform:translateY(14px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation:none !important; transition:none !important; }
+}
+
+@media (max-width: 768px){
+  :root{ --gutter:6vw; }
+  .topbar img{ height:36px; }
+}
+
+/* ---------- Administración ---------- */
+
+.admin .stage{ max-width:none; justify-content:flex-start; }
+
+.admin-grid{
+  display:grid;
+  grid-template-columns:minmax(0, 360px) minmax(0, 1fr);
+  gap:clamp(2rem, 5vw, 4rem);
+  align-items:start;
+}
+@media (max-width: 900px){ .admin-grid{ grid-template-columns:1fr; } }
+
+.panel{
+  border:1px solid var(--green-18);
+  border-left:3px solid var(--green);
+  border-radius:4px;
+  padding:1.6rem;
+  background:var(--green-10);
+}
+
+.panel h2, .list h2{
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:1.25rem;
+  margin-bottom:1.2rem;
+}
+
+.code-big{
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:2.4rem;
+  letter-spacing:.2em;
+  color:var(--gold);
+  margin:.4rem 0 1.2rem;
+}
+
+.client{
+  border-bottom:1px solid var(--green-18);
+  padding:1rem 0;
+}
+.client:first-of-type{ border-top:1px solid var(--green-18); }
+
+.client-head{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:.4rem 1rem;
+  align-items:baseline;
+}
+
+.client-name{ font-family:var(--font-display); font-weight:500; font-size:1.1rem; }
+.client-sub{ color:var(--ink-dim); font-size:.88rem; }
+
+.status{ font-size:.85rem; color:var(--ink-dim); }
+.status.done{ color:var(--green-70); }
+.status.started{ color:var(--gold-dim); }
+
+.scores{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+  gap:.6rem 1.4rem;
+  margin-top:.9rem;
+  font-size:.9rem;
+}
+.scores b{ font-family:var(--font-display); font-weight:500; color:var(--ink); }
+.scores span{ color:var(--ink-dim); }
