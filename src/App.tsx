@@ -220,19 +220,27 @@ export default function App() {
 
 // Modal de entrada: clave, o pedirla por WhatsApp (sin email en ningún paso)
 function KeyModal({ onEnter }: { onEnter: (s: { code: string; name: string }) => void }) {
-  const [code, setCode] = useState('');
+  // El link que manda Julio trae la clave (?clave=XG6VJZ): se completa y entra sola, sin tipear
+  const linkCode = new URLSearchParams(window.location.search).get('clave') ?? '';
+  const [code, setCode] = useState(linkCode);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
-  async function enter(e: FormEvent) {
+  useEffect(() => { if (linkCode) tryCode(linkCode); }, []);
+
+  function enter(e: FormEvent) {
     e.preventDefault();
+    tryCode(code);
+  }
+
+  async function tryCode(value: string) {
     setBusy(true);
     setError('');
     try {
       const res = await fetch('/api/access', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ code: value }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) return onEnter({ code: data.code, name: data.name });

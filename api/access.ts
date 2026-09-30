@@ -10,7 +10,11 @@ export async function POST(req: Request) {
     SELECT d.id, d.completed_at, c.name
     FROM diagnostics d JOIN clients c ON c.id = d.client_id
     WHERE d.code = ${clean}`;
-  if (rows.length === 0) return json({ error: 'not_found' }, 404);
+  if (rows.length === 0) {
+    // Queda en los registros de Vercel para ver qué se tipeó mal (ej. 6 por G)
+    console.log(`clave no encontrada: ${clean}`);
+    return json({ error: 'not_found' }, 404);
+  }
   if (rows[0].completed_at) return json({ error: 'used' }, 409);
 
   await sql`UPDATE diagnostics SET started_at = COALESCE(started_at, now()) WHERE id = ${rows[0].id}`;
